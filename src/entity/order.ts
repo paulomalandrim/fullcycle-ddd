@@ -29,7 +29,7 @@ export class Order{
     }
 
     total(): number{
-        return this._itens.reduce((acc, item) => acc + item._price, 0);
+        return this._itens.reduce((acc, item) => acc + item.price, 0);
     }
     
 }
