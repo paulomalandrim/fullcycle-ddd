@@ -26,6 +26,9 @@ export default class Customer{
         return this._rewardPoints;
     }
 
+    get address(): Address{
+        return this._address;
+    }
 
     validate(){
         if (this._name.length === 0){
@@ -51,7 +54,7 @@ export default class Customer{
         this._active = false;
     }
 
-    set address(address: Address){
+    changeAddress(address: Address){
         this._address = address;
     }
 
