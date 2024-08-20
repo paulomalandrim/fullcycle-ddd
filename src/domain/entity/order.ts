@@ -28,6 +28,10 @@ export class Order{
 
     }
 
+    get id(): string{
+        return this._id;
+    }
+
     total(): number{
         return this._itens.reduce((acc, item) => acc + item.price, 0);
     }

@@ -14,6 +14,14 @@ export class OrderItem{
         this.validate();
     }
 
+    get quantity(){
+        return this._quantity;
+    }
+
+    get name(){
+        return this._name;
+    }
+
     validate(): boolean{
         if (this._quantity == 0){
             throw new Error("Quantity must be greater than zero");
@@ -21,6 +29,10 @@ export class OrderItem{
         return true;
     }
 
+    get id(){
+        return this._id;
+    }
+    
     get price(){
         return this._price * this._quantity;
     }
