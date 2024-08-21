@@ -5,7 +5,6 @@ import ProductRepository from "./product.repository";
 
 describe("Product repository test", () => {
 
-    //console.log("inicio do Product Repository test...");
     let sequelize: Sequelize;
 
     beforeEach(async () => {

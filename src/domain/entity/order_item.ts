@@ -22,6 +22,10 @@ export class OrderItem{
         return this._name;
     }
 
+    get productId(): string{
+        return this._productId;
+    }
+
     validate(): boolean{
         if (this._quantity == 0){
             throw new Error("Quantity must be greater than zero");
