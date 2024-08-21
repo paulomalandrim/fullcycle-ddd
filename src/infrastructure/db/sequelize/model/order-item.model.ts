@@ -16,7 +16,7 @@ export default class OrderItemModel extends Model{
     declare productId: string;
 
     @BelongsTo(() => ProductModel)
-    declare product: ProductModel;
+    declare product: Awaited<ProductModel>;
 
     @ForeignKey(() => OrderModel)
     @Column({allowNull: false})

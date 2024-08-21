@@ -16,7 +16,7 @@ export default class OrderModel extends Model{
     declare customerId: string;
 
     @BelongsTo(() => CustomerModel)
-    declare customer: CustomerModel;
+    declare customer: Awaited<CustomerModel>;
 
     @HasMany(() => OrderItemModel)
     declare items: OrderItemModel[];
