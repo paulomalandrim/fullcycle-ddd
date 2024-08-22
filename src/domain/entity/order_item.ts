@@ -38,7 +38,10 @@ export class OrderItem{
     }
     
     get price(){
-        return this._price * this._quantity;
+        //return this._price * this._quantity;
+        // Campo foi ajustado pois ao devolver o price * quantity o conteúdo do 
+        // objeto inserido e o objeto lido são diferentes
+        return this._price
     }
 
 

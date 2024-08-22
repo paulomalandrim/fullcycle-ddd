@@ -21,34 +21,51 @@ export default class OrderRepository implements OrderRepositoryInterface{
         },
         {
             include: [{model: OrderItemModel}]
-        }
-    );
+        });      
     }
 
     async update(entity: Order): Promise<void> {
-    //     await CustomerModel.update(
-    //         {
-    //             name: entity.name,
-    //             street: entity.address.street,
-    //             number: entity.address.number,
-    //             zipcode: entity.address.zip,
-    //             city: entity.address.city,
-    //             state: entity.address.state,
-    //             active: entity.isActive(),
-    //             rewardPoints: entity.rewardPoints,
-    //         },
-    //         {
-    //             where: {
-    //                 id: entity.id
-    //             },
-    //         }
-    //     );
+        
+        let orderModel
+        try {
+            orderModel = await OrderModel.findOne({ where: { id: entity.id }, 
+                                                    rejectOnEmpty: true,
+                                                    include: ["items"] });
+        } catch (error) {
+            throw new Error("Order not found")
+        }
+
+        entity.items.forEach(async (item) => {
+            await OrderItemModel.upsert({
+                id: item.id,
+                productId: item.productId,
+                orderId: entity.id,
+                quantity: item.quantity,
+                name: item.name, 
+                price: item.price            
+            });
+        });
+        
+        await OrderModel.update(
+            {
+                name: entity.id,
+                customerId: entity.customerId,
+                total: entity.total()
+            },
+            {
+                where: {
+                    id: entity.id
+                },
+            }
+        );
      }
 
      async find(id: string): Promise<Order> {
         let orderModel
         try {
-            orderModel = await OrderModel.findOne({ where: { id }, rejectOnEmpty: true });
+            orderModel = await OrderModel.findOne({ where: { id }, 
+                                                    rejectOnEmpty: true, 
+                                                    include: ["items"] });
         } catch (error) {
             throw new Error("Order not found")
         }
@@ -56,39 +73,35 @@ export default class OrderRepository implements OrderRepositoryInterface{
         const order = new Order(
             orderModel.id,
             orderModel.customerId,
-            orderModel.items.map((orderItemModel) => {
-                const item = new OrderItem(
-                    orderItemModel.id,
-                    orderItemModel.name,
-                    orderItemModel.price,
-                    orderItemModel.productId,
-                    orderItemModel.quantity
-                )
-                return item;
+            orderModel.items.map((item) => {
+                return new OrderItem(
+                    item.id,
+                    item.name,
+                    item.price,
+                    item.productId,
+                    item.quantity
+                );
             })
         );
-
         return order;
      }
 
     async findAll(): Promise<Order[]> {
-        const ordersModel = await OrderModel.findAll();
+        const ordersModel = await OrderModel.findAll({ include: ["items"] });
         
-       return ordersModel.map((orderModel) => {
-           const order = new Order(
+        return ordersModel.map((orderModel) => {
+           return new Order(
                 orderModel.id, 
                 orderModel.customerId, 
                 orderModel.items.map((orderItemModel) => {
-                    const orderItem = new OrderItem(
+                    return new OrderItem(
                         orderItemModel.id,
                         orderItemModel.name,
                         orderItemModel.price,
                         orderItemModel.productId,
                         orderItemModel.quantity
-                    );
-                    return orderItem;
+                    )
                 }))
-            return order; 
         });
 
     }

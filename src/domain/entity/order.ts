@@ -43,7 +43,9 @@ export class Order{
     }
 
     total(): number{
-        return this._items.reduce((acc, item) => acc + item.price, 0);
+        // AJUSTADO PARA OBTER O TOTAL ATRAVES DO PRICE * QUANTITY AO INVES 
+        // DE RECEBER O PRICE CALCULADO DO ITEM
+        return this._items.reduce((acc, item) => acc + item.price * item.quantity, 0);
     }
     
 }
